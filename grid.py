@@ -46,10 +46,35 @@ def img_threshold(image, threshold):
     
     new_image=create_image(get_width(image), get_height(image))
     for row in range(get_height(image)):
-        for col in range(get_height(image)):
+        for col in range(get_width(image)):
             old_pixel=get_pixel(image,row,col)
             set_pixel(new_image,row,col, 255 if old_pixel>=threshold else 0)
-    return(new_image)        
+    return(new_image)  
+
+def flip_horizontal(image):
+   new_image=create_image(get_width(image), get_height(image)) 
+   for row in range(get_height(image)):
+      for col in range(get_width(image)):
+          old_pixel=get_pixel(image,row, get_width(image)-1-col)
+          set_pixel(new_image,row,col,old_pixel)
+   return(new_image)       
+
+def flip_vertical(image):
+    new_image=create_image(get_width(image), get_height(image))
+    for row in range(get_height(image)):
+        for col in range(get_width(image)):
+            old_pixel=get_pixel(image,get_height(image)-1-row,col)
+            set_pixel(new_image,row,col,old_pixel)
+    return(new_image)      
+
+def flip(image):
+    new_image=create_image(get_width(image), get_height(image))
+    for row in range(get_height(image)):
+        for col in range(get_width(image)):
+                old_pixel=get_pixel(image,get_height(image)-1-row,get_width(image)-1-col)
+                set_pixel(new_image,row,col,old_pixel)
+    return(new_image)
+
 
 width = int(input("Enter width:"))
 height = int(input("Enter height: "))
@@ -67,3 +92,6 @@ print_image(image)
 print_image(invert(image))
 print_image(brightness(image,amount))
 print_image(img_threshold(image,threshold))
+print_image(flip_horizontal(image))
+print_image(flip_vertical(image))
+print_image(flip(image))
