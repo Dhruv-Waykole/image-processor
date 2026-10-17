@@ -20,36 +20,50 @@ def clamp(value):
         return 0
     if value > 255:
         return 255
+    return value
     
 def print_image(image):
     for row in image:
         print(" ".join(f"{pixel:3}" for pixel in row))
 
 def invert(image):
-    new_pixel= 255-pixel   
+    new_image= create_image(get_width(image), get_height(image))  
     for row in range(get_height(image)):
      for col in range(get_width(image)):
-        set_pixel(image, row, col, new_pixel)  
-    return image       
+        old_pixel=get_pixel(image,row,col)
+        set_pixel(new_image, row, col, 255-old_pixel)  
+    return new_image       
 
-def brightness(image):
-    new_pixel=get_pixel(image,row,col)+amount
+def brightness(image,amount):
+    new_image=create_image(get_width(image), get_height(image))
     for row in range(get_height(image)):
          for col in range(get_width(image)):
-            set_pixel(image, row, col, new_pixel)  
-    return (image, lambda amount: clamp(255+amount)) 
+            old_pixel=get_pixel(image,row,col)
+            set_pixel(new_image, row, col, clamp(amount+old_pixel))  
+    return (new_image) 
+
+def img_threshold(image, threshold):
+    
+    new_image=create_image(get_width(image), get_height(image))
+    for row in range(get_height(image)):
+        for col in range(get_height(image)):
+            old_pixel=get_pixel(image,row,col)
+            set_pixel(new_image,row,col, 255 if old_pixel>=threshold else 0)
+    return(new_image)        
 
 width = int(input("Enter width:"))
 height = int(input("Enter height: "))
 image = create_image(width, height)
-pixel=int(input("Enter pixel : "))
-amount = int(input("Enter amount:"))
+threshold=int(input("enter threshold value:"))
+amount = int(input("Enter the amount you want brightness to be increased by (negative decrese in brightness):"))
 
 for row in range(get_height(image)):
     for col in range(get_width(image)):
+        pixel=int(input("Enter pixel : "))
         set_pixel(image, row, col, pixel)
         
 
 print_image(image)
 print_image(invert(image))
-print_image(clamp(brightness(image)))
+print_image(brightness(image,amount))
+print_image(img_threshold(image,threshold))
