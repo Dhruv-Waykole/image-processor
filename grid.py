@@ -86,30 +86,104 @@ def crop(image, top, left, new_height, new_width):
         for col in range(new_width):
             old=get_pixel(image,top+row,left+col)
             set_pixel(new_image,row,col,old)
-    return (new_image)        
+    return (new_image) 
+
+def clamp_blur(value, low, high):
+    if value < low:
+        return low
+    if value > high:
+        return high
+    return value
+
+def get_pixel_clamped(image, row, col):
+    row = clamp_blur(row, 0, get_height(image) - 1)
+    col = clamp_blur(col, 0, get_width(image) - 1)
+    return image[row][col]
+
+def convolve(image, kernel):
+    h = get_height(image)
+    w = get_width(image)
+    kh = len(kernel)
+    kw = len(kernel[0])
+    offset_r = kh // 2
+    offset_c = kw // 2
+
+    divisor = sum(sum(k_row) for k_row in kernel)
+    if divisor == 0:
+        divisor = 1
+
+    new_image = create_image(w, h)
+
+    for row in range(h):
+        for col in range(w):
+            total = 0
+            for kr in range(kh):
+                for kc in range(kw):
+                    old_pixel = get_pixel_clamped(image, row + kr - offset_r, col + kc - offset_c)
+                    total += old_pixel * kernel[kr][kc]
+            set_pixel(new_image, row, col, clamp(round(total / divisor)))
+
+    return new_image
 
 
 width = int(input("Enter width:"))
 height = int(input("Enter height: "))
 image = create_image(width, height)
-threshold=int(input("enter threshold value:"))
-amount = int(input("Enter the amount you want brightness to be increased by (negative decrese in brightness):"))
-top=int(input("starting row: "))
-left=int(input("starting col: "))
-new_height=int(input("Enter height needed for the cropped image: "))
-new_width=int(input("Enter width needed for the cropped image: "))
+
 
 for row in range(get_height(image)):
     for col in range(get_width(image)):
         pixel=int(input("Enter pixel : "))
         set_pixel(image, row, col, pixel)
-        
 
-print_image(image)
+
+print("Original --> ")
+print_image(image) 
+print("After applying invert -->")        
 print_image(invert(image))
+
+amount = int(input("Enter the amount you want brightness to be increased by (negative decrese in brightness):"))
+print("Original --> ")
+print_image(image) 
+print("After applying required brightness changes -->")
 print_image(brightness(image,amount))
+
+threshold=int(input("enter threshold value:"))
+print("Original --> ")
+print_image(image) 
+print("After implementing the threshold value -->")
 print_image(img_threshold(image,threshold))
+
+print("Original --> ")
+print_image(image) 
+print("After applying horizontal flip -->")
 print_image(flip_horizontal(image))
+
+print("Original --> ")
+print_image(image) 
+print("After applying vertical flip -->")
 print_image(flip_vertical(image))
+
+print("Original --> ")
+print_image(image) 
+print("After applying flip -->")
 print_image(flip(image))
+
+top=int(input("starting row: "))
+left=int(input("starting col: "))
+new_height=int(input("Enter height needed for the cropped image: "))
+new_width=int(input("Enter width needed for the cropped image: "))
+print("Original --> ")
+print_image(image) 
+print("After cropping the image --> ")
 print_image(crop(image,top,left,new_height,new_width))
+
+BLUR_KERNEL = [
+    [1, 1, 1],
+    [1, 1, 1],
+    [1, 1, 1],
+]
+print("Original --> ")
+print_image(image) 
+print("After applying blur -->")
+print_image(convolve(image, BLUR_KERNEL))
