@@ -75,12 +75,29 @@ def flip(image):
                 set_pixel(new_image,row,col,old_pixel)
     return(new_image)
 
+def crop(image, top, left, new_height, new_width):
+    if top < 0 or left < 0 or new_height <= 0 or new_width <= 0:
+        raise ValueError("Values must be positive (top and left can be 0)")
+    if top + new_height > get_height(image) or left + new_width > get_width(image):
+        raise ValueError("Crop area goes outside the image")
+    
+    new_image=create_image(new_width, new_height)
+    for row in range(new_height):
+        for col in range(new_width):
+            old=get_pixel(image,top+row,left+col)
+            set_pixel(new_image,row,col,old)
+    return (new_image)        
+
 
 width = int(input("Enter width:"))
 height = int(input("Enter height: "))
 image = create_image(width, height)
 threshold=int(input("enter threshold value:"))
 amount = int(input("Enter the amount you want brightness to be increased by (negative decrese in brightness):"))
+top=int(input("starting row: "))
+left=int(input("starting col: "))
+new_height=int(input("Enter height needed for the cropped image: "))
+new_width=int(input("Enter width needed for the cropped image: "))
 
 for row in range(get_height(image)):
     for col in range(get_width(image)):
@@ -95,3 +112,4 @@ print_image(img_threshold(image,threshold))
 print_image(flip_horizontal(image))
 print_image(flip_vertical(image))
 print_image(flip(image))
+print_image(crop(image,top,left,new_height,new_width))
