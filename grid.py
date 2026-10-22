@@ -3,7 +3,7 @@ def create_image(width, height, value=0 ):
 
 def get_width(image):
     return len(image[0])
-
+    
 def get_height(image):
     return len(image)
 
@@ -100,7 +100,7 @@ def get_pixel_clamped(image, row, col):
     col = clamp_blur(col, 0, get_width(image) - 1)
     return image[row][col]
 
-def convolve(image, kernel):
+def create_kernel(image, kernel):
     h = get_height(image)
     w = get_width(image)
     kh = len(kernel)
@@ -181,7 +181,7 @@ print_image(image)
 print("After cropping the image --> ")
 print_image(crop(image,top,left,new_height,new_width))
 
-BLUR_KERNEL = [
+blur_kernel = [
     [1, 1, 1],
     [1, 1, 1],
     [1, 1, 1],
@@ -189,4 +189,4 @@ BLUR_KERNEL = [
 print("Original --> ")
 print_image(image) 
 print("After applying blur -->")
-print_image(convolve(image, BLUR_KERNEL))
+print_image(create_kernel(image, blur_kernel))
